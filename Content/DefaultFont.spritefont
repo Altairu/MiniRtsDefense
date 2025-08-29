@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<XnaContent xmlns:ns="Microsoft.Xna.Framework.Content.Pipeline.Graphics">
+  <Asset Type="ns:FontDescription">
+    <!-- PCにある日本語対応フォント名に変更（例：Meiryo / Yu Gothic UI） -->
+    <FontName>Noto Sans JP Black</FontName>
+    <!-- 基準サイズ。HUDなら18〜20、タイトルは36〜42を推奨 -->
+    <Size>30</Size>
+    <Spacing>0</Spacing>
+    <UseKerning>true</UseKerning>
+    <Style>Regular</Style>
+
+    <!-- DefaultCharacter は必ず CharacterRegions 内に含まれる文字にする。ここでは全角スペースを避け '・' を利用 -->
+    <DefaultCharacter>・</DefaultCharacter>
+
+    <!-- 使う文字範囲を追加（日本語を含む） -->
+    <CharacterRegions>
+      <!-- ASCII -->
+      <CharacterRegion><Start> </Start><End>~</End></CharacterRegion>
+      <!-- ひらがな -->
+      <CharacterRegion><Start>ぁ</Start><End>ゖ</End></CharacterRegion>
+      <!-- カタカナ -->
+      <CharacterRegion><Start>ァ</Start><End>ヶ</End></CharacterRegion>
+      <!-- 長音記号 -->
+      <CharacterRegion><Start>ー</Start><End>ー</End></CharacterRegion>
+      <!-- 反復記号 -->
+      <CharacterRegion><Start>々</Start><End>々</End></CharacterRegion>
+      <!-- 全角チルダ -->
+      <CharacterRegion><Start>～</Start><End>～</End></CharacterRegion>
+      <!-- 句読点・中点など -->
+      <CharacterRegion><Start>・</Start><End>・</End></CharacterRegion>
+      <CharacterRegion><Start>、</Start><End>。</End></CharacterRegion>
+      <!-- CJK 統合漢字（広めに確保。必要に応じて削ってもOK） -->
+      <CharacterRegion><Start>一</Start><End>龥</End></CharacterRegion>
+      <!-- 全角の !〜@ あたり（任意） -->
+      <CharacterRegion><Start>！</Start><End>＠</End></CharacterRegion>
+    </CharacterRegions>
+  </Asset>
+</XnaContent>
