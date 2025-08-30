@@ -104,18 +104,19 @@ namespace MiniRtsDefense
         {
             _sb = new SpriteBatch(GraphicsDevice);
             _font = Content.Load<SpriteFont>("DefaultFont");
-            // bgm.mp3 を Content.mgcb に追加し名前を "bgm" にした前提
-            try
+            // bgm.mp3 (または orchestral_mission.mp3) を Content.mgcb に追加しておく必要あり
+            // 優先: "bgm" -> 失敗したら "orchestral_mission" を試す
+            Song TryLoad(string name)
             {
-                _bgm = Content.Load<Song>("bgm");
+                try { return Content.Load<Song>(name); } catch { return null; }
+            }
+            _bgm = TryLoad("bgm") ?? TryLoad("orchestral_mission");
+            if (_bgm != null)
+            {
                 MediaPlayer.IsRepeating = true;
                 MediaPlayer.Volume = _musicVol;
-                MediaPlayer.Play(_bgm);
+                try { MediaPlayer.Play(_bgm); } catch { }
                 _lastMusicState = _state;
-            }
-            catch (Exception)
-            {
-                // 失敗してもゲーム継続
             }
         }
 
@@ -215,7 +216,7 @@ namespace MiniRtsDefense
             {
                 b.Pos += b.Vel * (DT * BASE_TILE);
                 b.Life -= DT;
-                if (b.Life <= 0) { _bullets.Remove(b); return; }
+                if (b.Life <= 0) { _bullets.Remove(b); continue; }
 
                 foreach (var e in _enemies.ToArray())
                 {
@@ -225,7 +226,7 @@ namespace MiniRtsDefense
                         if (b.SlowFactor.HasValue) { e.SlowTimer = 0.8f; e.SlowFactor = b.SlowFactor.Value; }
                         _bullets.Remove(b);
                         if (e.Hp <= 0) { _gold += 3; _enemies.Remove(e); }
-                        return;
+                        break;
                     }
                 }
             }
@@ -234,7 +235,7 @@ namespace MiniRtsDefense
             {
                 eb.Pos += eb.Vel * (DT * BASE_TILE);
                 eb.Life -= DT;
-                if (eb.Life <= 0) { _enemyBullets.Remove(eb); return; }
+                if (eb.Life <= 0) { _enemyBullets.Remove(eb); continue; }
 
                 if (_hqStack.Count > 0 && Vector2.Distance(eb.Pos, GridCenter(_hq)) < 14)
                 {
@@ -248,7 +249,7 @@ namespace MiniRtsDefense
                         RecomputeFlow();
                     }
                     _enemyBullets.Remove(eb);
-                    return;
+                    continue;
                 }
 
                 var gp = GridAtScreen(eb.Pos);
@@ -264,7 +265,7 @@ namespace MiniRtsDefense
                         if (sc.Blocks) RecomputeFlow();
                     }
                     _enemyBullets.Remove(eb);
-                    return;
+                    continue;
                 }
 
                 if (Vector2.Distance(eb.Pos, GridCenter(_hq)) < 16)
@@ -272,6 +273,7 @@ namespace MiniRtsDefense
                     _hqHp -= eb.Dmg;
                     _enemyBullets.Remove(eb);
                     if (_hqHp <= 0) _state = GameState.GameOver;
+                    continue;
                 }
             }
 
